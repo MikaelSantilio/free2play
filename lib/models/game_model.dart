@@ -3,6 +3,7 @@ import 'dart:convert';
 // import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:free2play/utils.dart';
 
 Future<List<Game>> fetchGamesData(String url) async {
   Map<String, String> headers = {
@@ -43,5 +44,8 @@ class Game {
       genre: json['genre'] as String,
       platform: json['platform'] as String,
     );
+  }
+  int save() {
+    return 0;
   }
 }

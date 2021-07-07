@@ -76,6 +76,19 @@ void main() async {
     );
   }
 
+  Future<List<Map<String, Object?>>> queryDog(int id) async {
+    // Get a reference to the database.
+    final db = await database;
+
+    // Update the given Dog.
+    final result = await db.query(
+      'dogs',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+    return result;
+  }
+
   Future<void> deleteDog(int id) async {
     // Get a reference to the database.
     final db = await database;
@@ -92,7 +105,7 @@ void main() async {
 
   // Create a Dog and add it to the dogs table
   var fido = Dog(
-    id: 0,
+    id: 1,
     name: 'Fido',
     age: 35,
   );
@@ -112,12 +125,13 @@ void main() async {
 
   // Print the updated results.
   print(await dogs()); // Prints Fido with age 42.
+  // Print the list of dogs (empty).
+  print("Dog single query --");
+  print(await queryDog(1));
 
   // Delete Fido from the database.
   await deleteDog(fido.id);
 
-  // Print the list of dogs (empty).
-  print(await dogs());
 }
 
 class Dog {

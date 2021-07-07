@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:free2play/models/game_model.dart';
 import 'package:free2play/widgets/content_scroll.dart';
-import 'package:free2play/widgets/content_scroll.dart';
 import 'package:free2play/utils.dart';
 
 
@@ -12,26 +11,10 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with ConnectionView {
+class _HomeScreenState extends State<HomeScreen> {
   Future<List<Game>>? _futureFavoriteGames;
   Future<List<Game>>? _futureShooterGames;
   Future<Map<String, dynamic>>? _connectionText;
-
-  // Future<Map<String, dynamic>> _getConnectionText() async {
-  //   try {
-  //     final response = await http.get(Uri.parse("https://jsonplaceholder.typicode.com/users"));
-  //     // print(response);
-  //     return {
-  //       "text": "Online",
-  //       "color": Colors.green.shade500
-  //     };
-  //   } catch (e) {
-  //     return {
-  //       "text": "Offline",
-  //       "color": Colors.red.shade700
-  //     };
-  //   }
-  // }
 
   @override
   void initState() {
