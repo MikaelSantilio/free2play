@@ -108,7 +108,10 @@ class GameScroll extends StatelessWidget {
                   },
                 );
               } else if (snapshot.hasError) {
-                return Text("${snapshot.error}");
+                return Text("${snapshot.error}", style: const TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 12.0));
               }
               // By default show a loading spinner.
               return const CircularProgressIndicator();

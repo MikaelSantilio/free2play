@@ -35,8 +35,21 @@ Future<Database> getDatabase() async {
 }
 
   Future<List<Game>> gamesQuery(List<int> ids, Database db, {String tableName = 'games'}) async {
-    final List<Map<String, dynamic>> maps = await db.query(tableName, where: 'id IN ?', whereArgs: ids);
-    return maps.map<Game>((json) => Game.fromJson(json)).toList();
+    // print('id IN (${ids.join(', ')})');
+    final List<Map<String, dynamic>> maps = await db.query(tableName, where: 'id IN (${ids.join(', ')})');
+
+    return List.generate(maps.length, (i) {
+      return Game(
+        id: maps[i]['id'],
+        title: maps[i]['title'],
+        thumbnailUrl: maps[i]['thumbnailUrl'],
+        thumbnailBase64: maps[i]['thumbnailBase64'],
+        genre: maps[i]['genre'],
+        platform: maps[i]['platform'],
+      );
+    });
+    // final List<Map<String, dynamic>> maps = await db.rawQuery('SELECT * FROM $tableName where id in ')
+    // return maps.map<Game>((json) => Game.fromMap(json)).toList();
   }
 
   Future<GameDetail> gameDetailQuery(Game game, Database db, {String tableName = 'gamesDetail'}) async {
@@ -51,25 +64,23 @@ Future<Database> getDatabase() async {
     throw("Detalhes do jogo não foram encontrados!"); 
   }
 
-  Future<List<Map<String, Object?>>> rowQuery(String tableName, Database db) async {
-    final maps = await db.query(tableName);
-    return maps;
-    // return List.generate(maps.length, (i) {
-    //   return int.parse(String(maps[i]['id']));
-    // })
-    
+  Future<List<int>> rowQuery(String tableName, Database db) async {
+    final List<Map<String, dynamic>> maps = await db.query(tableName);
+    final rowsQuery = maps.map<RowQuery>((json) => RowQuery.fromMap(json)).toList();
+    return rowsQuery.map<int>((row) => row.id).toList();
   }
 
   Future<bool> exists(String tableName, dynamic object, Database db, {String field = 'id'}) async {
+    final List<Map<String, Object?>> emptyList = [];
     final result = await db.query(
       tableName,
       where: '$field = ?',
       whereArgs: [object.id],
     );
-    if (result != []) {
-      return true;
+    if (result.isEmpty) {
+      return false;
     }
-    return false;
+    return true;
   }
 
   Future<void> deleteAllRows(String tableName, Database db) async {
@@ -97,3 +108,27 @@ Future<Database> getDatabase() async {
     print("$tableName ${object.id} created");
     }
   }
+
+
+
+class RowQuery {
+  final int id;
+
+  RowQuery({
+    required this.id,
+  });
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+    };
+  }
+  factory RowQuery.fromMap(Map<String, dynamic> json) {
+    return RowQuery(
+      id: json['id'] as int,
+    );
+  }
+  @override
+  String toString() {
+    return 'RowQuery{id: $id}';
+  }
+}

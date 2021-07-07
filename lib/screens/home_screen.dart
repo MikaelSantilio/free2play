@@ -20,10 +20,15 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     _connectionText = getConnectionText();
     super.initState();
+    updateFutureRows();
+    
+  }
+
+  void updateFutureRows() {
     _futureShooterGames = fetchGamesData(
-        "https://free2play-api.herokuapp.com/api/games/search?platform=browser&category=Shooter");
+        "https://free2play-api.herokuapp.com/api/games/search?platform=browser&category=Shooter", "gamesRow01");
     _futureFavoriteGames = fetchGamesData(
-        "https://free2play-api.herokuapp.com/api/games/favorites/");
+        "https://free2play-api.herokuapp.com/api/games/favorites/", "favorites");
   }
 
   @override
@@ -51,10 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
             IconButton(
               padding: const EdgeInsets.only(right: 30.0),
               onPressed: () => setState(() {
-                _futureShooterGames = fetchGamesData(
-        "https://free2play-api.herokuapp.com/api/games/search?platform=browser&category=Shooter");
-    _futureFavoriteGames = fetchGamesData(
-        "https://free2play-api.herokuapp.com/api/games/favorites/");
+                updateFutureRows();
               }),
               icon: const Icon(Icons.sync),
               iconSize: 30.0,

@@ -19,3 +19,14 @@ Future<Map<String, dynamic>> getConnectionText() async {
   }
 
 
+Future<bool> getConnectionStatus() async {
+    try {
+      await http.get(Uri.parse("https://jsonplaceholder.typicode.com/users"));
+      // print(response);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+
