@@ -52,14 +52,28 @@ Future<Database> getDatabase() async {
     // return maps.map<Game>((json) => Game.fromMap(json)).toList();
   }
 
-  Future<GameDetail> gameDetailQuery(Game game, Database db, {String tableName = 'gamesDetail'}) async {
+  Future<GameDetail> gameDetailQuery(dynamic game, Database db, {String tableName = 'gamesDetail'}) async {
     final gameDetailMaps = await db.query(
         tableName,
         where: 'id = ?',
         whereArgs: [game.id],
       );
-    if (gameDetailMaps != []) {
-      return GameDetail.fromJson(gameDetailMaps.first);
+    GameDetail gameDetail;
+    if (gameDetailMaps.isNotEmpty) {
+       gameDetail = GameDetail (
+        id: gameDetailMaps.first['id'] as int,
+        title: gameDetailMaps.first['title'] as String,
+        thumbnailUrl: gameDetailMaps.first['thumbnailUrl'] as String,
+        thumbnailBase64: gameDetailMaps.first['thumbnailBase64'] as String,
+        genre: gameDetailMaps.first['genre'] as String,
+        platform: gameDetailMaps.first['platform'] as String,
+        description: gameDetailMaps.first['description'] as String,
+      );
+       if (await exists("favorites", RowQuery(id: game.id), db)) {
+          gameDetail.favorite = true;
+          return gameDetail;
+       }
+       return gameDetail;
     }
     throw("Detalhes do jogo não foram encontrados!"); 
   }
@@ -71,7 +85,6 @@ Future<Database> getDatabase() async {
   }
 
   Future<bool> exists(String tableName, dynamic object, Database db, {String field = 'id'}) async {
-    final List<Map<String, Object?>> emptyList = [];
     final result = await db.query(
       tableName,
       where: '$field = ?',

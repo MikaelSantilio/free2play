@@ -10,30 +10,20 @@ Future<List<Game>> fetchGamesData(String url, String tableName) async {
   Map<String, String> headers = {
 		"Authorization": "Token 5848cbc484d7138d4f726e34c685f160e3fc868a"
   };
-  final response = await http.get(Uri.parse(url), headers: headers);
-  final parsedGames = await compute(parseGames, response.body);
   final db = await getDatabase();
   final bool connectionStatus = await getConnectionStatus();
   if (connectionStatus) {
-    
-    // await deleteAllRows(tableName, db);
+    final response = await http.get(Uri.parse(url), headers: headers);
+    final parsedGames = await compute(parseGames, response.body);
+    await deleteAllRows(tableName, db);
+
     for (var game in parsedGames) {
       await updateOrCreate("games", game, db);
       await updateOrCreate(tableName, RowQuery(id: game.id), db);
     }
     final ids = await rowQuery(tableName, db);
-    // print("---");
-    // print(ids.length);
-    // print("+");
-    // final len = await gamesQuery(ids, db);
-    // print("=== ${len.first.keys} ");
-    // print("=== ${len.first['genre']} ");
-    // print("=== ${len.first['platform']} ");
-    // print((await parsedGames).length);
     return gamesQuery(ids, db);
-    // return parsedGames;
   }
-  // final ids = await rowQuery(tableName, db);
   final ids = await rowQuery(tableName, db);
   return gamesQuery(ids, db);
 }

@@ -4,15 +4,24 @@ import 'dart:convert';
 // import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 // import 'package:free2play/models/nested_models.dart';
+import 'package:free2play/utils.dart';
+import 'package:free2play/db_test.dart';
 
 Future<GameDetail> fetchGameDetailData(int gameId) async {
-  String url = "https://free2play-api.herokuapp.com/api/games/${gameId}/";
+  String url = "https://free2play-api.herokuapp.com/api/games/$gameId/";
   Map<String, String> headers = {
 		"Authorization": "Token 5848cbc484d7138d4f726e34c685f160e3fc868a"
   };
-  final response = await http.get(Uri.parse(url), headers: headers);
-
-  return parseGameDetail(response.body);
+  final db = await getDatabase();
+  const tableName = "gamesDetail";
+  final bool connectionStatus = await getConnectionStatus();
+  if (connectionStatus) {
+    final response = await http.get(Uri.parse(url), headers: headers);
+    final parsedGameDetail = parseGameDetail(response.body);
+    await updateOrCreate(tableName, parsedGameDetail, db);
+    return gameDetailQuery(parsedGameDetail, db);
+  }
+  return gameDetailQuery(RowQuery(id: gameId), db);
 }
 
 GameDetail parseGameDetail(String responseBody) {
@@ -28,6 +37,7 @@ class GameDetail {
   final String genre;
   final String platform;
   final String description;
+  bool? favorite = false;
   // final SystemRequirements minimumSystemRequirements;
 
   GameDetail({
@@ -39,6 +49,7 @@ class GameDetail {
     required this.platform,
     // required this.minimumSystemRequirements,
     required this.description,
+    this.favorite,
   });
   factory GameDetail.fromJson(Map<String, dynamic> json) {
     return GameDetail(

@@ -187,7 +187,10 @@ class _DetailScreenState extends State<DetailScreen> {
                 ],
               );
             } else if (snapshot.hasError) {
-              return Text("${snapshot.error}");
+              return Text("${snapshot.error}", style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    fontSize: 18.0));
             }
             return CircularProgressIndicator();
           },
