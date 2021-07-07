@@ -192,7 +192,7 @@ class _DetailScreenState extends State<DetailScreen> {
                                     color: Colors.white,
                                     fontSize: 18.0));
             }
-            return CircularProgressIndicator();
+            return Center(child: CircularProgressIndicator());
           },
         ));
   }

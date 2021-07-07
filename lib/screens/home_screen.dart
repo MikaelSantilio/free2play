@@ -21,7 +21,6 @@ class _HomeScreenState extends State<HomeScreen> {
     _connectionText = getConnectionText();
     super.initState();
     updateFutureRows();
-    
   }
 
   void updateFutureRows() {
@@ -57,6 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: const EdgeInsets.only(right: 30.0),
               onPressed: () => setState(() {
                 updateFutureRows();
+                _connectionText = getConnectionText();
               }),
               icon: const Icon(Icons.sync),
               iconSize: 30.0,
@@ -109,14 +109,14 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(height: 20.0),
           GameScroll(
             futureGames: _futureFavoriteGames,
-            title: 'Meus favoritos',
+            title: 'Favorites',
             imageHeight: 150.0,
             imageWidth: 200.0,
           ),
           const SizedBox(height: 10.0),
           GameScroll(
             futureGames: _futureShooterGames,
-            title: 'FPS para Windows',
+            title: 'Windows',
             imageHeight: 150.0,
             imageWidth: 200.0,
           ),

@@ -114,7 +114,7 @@ class GameScroll extends StatelessWidget {
                                             fontSize: 12.0));
               }
               // By default show a loading spinner.
-              return const CircularProgressIndicator();
+              return Container(child: Center(child: const CircularProgressIndicator()));
             },
           ),
         ),
