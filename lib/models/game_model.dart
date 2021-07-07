@@ -4,14 +4,20 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:free2play/utils.dart';
+import 'package:free2play/db_test.dart';
 
 Future<List<Game>> fetchGamesData(String url) async {
   Map<String, String> headers = {
 		"Authorization": "Token 5848cbc484d7138d4f726e34c685f160e3fc868a"
   };
   final response = await http.get(Uri.parse(url), headers: headers);
+  final parsedGames = await compute(parseGames, response.body);
+  final db = await getDatabase();
+  for (var game in parsedGames) {
+    updateOrCreate("games", game, db);
+  }
 
-  return compute(parseGames, response.body);
+  return parsedGames;
 }
 
 List<Game> parseGames(String responseBody) {
@@ -45,7 +51,18 @@ class Game {
       platform: json['platform'] as String,
     );
   }
-  int save() {
-    return 0;
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'title': title,
+      'thumbnailUrl': thumbnailUrl,
+      'thumbnailBase64': thumbnailBase64,
+      'genre': genre,
+      'platform': platform,
+    };
+  }
+  @override
+  String toString() {
+    return 'Game{id: $id, name: $title, age: $platform}';
   }
 }

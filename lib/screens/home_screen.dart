@@ -33,6 +33,13 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         backgroundColor: const Color(0xFF121212),
         elevation: 0.0,
+        leading: IconButton(
+            padding: const EdgeInsets.only(left: 30.0),
+            onPressed: () => print('Vazio'),
+            icon: const Icon(Icons.arrow_back),
+            iconSize: 30.0,
+            color: const Color(0xFF121212),
+          ),
         title: const Center(
           child: Image(
             image: AssetImage('assets/images/main_logo.png'),
@@ -40,6 +47,20 @@ class _HomeScreenState extends State<HomeScreen> {
             // width: 150.0,
           ),
         ),
+        actions: <Widget>[
+            IconButton(
+              padding: const EdgeInsets.only(right: 30.0),
+              onPressed: () => setState(() {
+                _futureShooterGames = fetchGamesData(
+        "https://free2play-api.herokuapp.com/api/games/search?platform=browser&category=Shooter");
+    _futureFavoriteGames = fetchGamesData(
+        "https://free2play-api.herokuapp.com/api/games/favorites/");
+              }),
+              icon: const Icon(Icons.sync),
+              iconSize: 30.0,
+              color: Colors.white,
+            ),
+          ],
       ),
       body: ListView(
         children: <Widget>[

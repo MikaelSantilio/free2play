@@ -3,7 +3,7 @@ import 'dart:convert';
 // import 'package:flutter/material.dart';
 // import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-import 'package:free2play/models/nested_models.dart';
+// import 'package:free2play/models/nested_models.dart';
 
 Future<GameDetail> fetchGameDetailData(int gameId) async {
   String url = "https://free2play-api.herokuapp.com/api/games/${gameId}/";
@@ -28,7 +28,7 @@ class GameDetail {
   final String genre;
   final String platform;
   final String description;
-  final SystemRequirements minimumSystemRequirements;
+  // final SystemRequirements minimumSystemRequirements;
 
   GameDetail({
     required this.id,
@@ -37,7 +37,7 @@ class GameDetail {
     required this.thumbnailBase64,
     required this.genre,
     required this.platform,
-    required this.minimumSystemRequirements,
+    // required this.minimumSystemRequirements,
     required this.description,
   });
   factory GameDetail.fromJson(Map<String, dynamic> json) {
@@ -49,7 +49,22 @@ class GameDetail {
       description: json['description'] as String,
       genre: json['genre'] as String,
       platform: json['platform'] as String,
-      minimumSystemRequirements: SystemRequirements.fromJson(json['minimum_system_requirements']),
+      // minimumSystemRequirements: SystemRequirements.fromJson(json['minimum_system_requirements']),
     );
+  }
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'title': title,
+      'thumbnailUrl': thumbnailUrl,
+      'thumbnailBase64': thumbnailBase64,
+      'genre': genre,
+      'platform': platform,
+      'description': description,
+    };
+  }
+    @override
+  String toString() {
+    return 'GameDetail{id: $id, name: $title, age: $platform}';
   }
 }
