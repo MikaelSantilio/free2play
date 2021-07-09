@@ -37,7 +37,7 @@ class GameDetail {
   final String genre;
   final String platform;
   final String description;
-  bool? favorite = false;
+  bool favorite = false;
   // final SystemRequirements minimumSystemRequirements;
 
   GameDetail({
@@ -49,7 +49,7 @@ class GameDetail {
     required this.platform,
     // required this.minimumSystemRequirements,
     required this.description,
-    this.favorite,
+    // required this.favorite,
   });
   factory GameDetail.fromJson(Map<String, dynamic> json) {
     return GameDetail(

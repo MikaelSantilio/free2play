@@ -3,6 +3,10 @@ import 'package:http/http.dart' as http;
 
 
 Future<Map<String, dynamic>> getConnectionText() async {
+  // return {
+  //       "text": "Offline",
+  //       "color": Colors.red.shade700
+  //     };
     try {
       await http.get(Uri.parse("https://jsonplaceholder.typicode.com/users"));
       // print(response);
@@ -20,6 +24,7 @@ Future<Map<String, dynamic>> getConnectionText() async {
 
 
 Future<bool> getConnectionStatus() async {
+  // return false;
     try {
       await http.get(Uri.parse("https://jsonplaceholder.typicode.com/users"));
       // print(response);
