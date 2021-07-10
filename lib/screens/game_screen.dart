@@ -35,28 +35,50 @@ class _DetailScreenState extends State<DetailScreen> {
     _futureGameDetail = fetchGameDetailData(game.id);
 
     return FutureBuilder<GameDetail>(
-          future: _futureGameDetail,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              GameDetail? gameDetail = snapshot.data;
-              return Scaffold(
-                backgroundColor: const Color(0xFF121212),
-                appBar: GameDetailAppBar(gameId: game.id, gameDetail: gameDetail, favoriteGame: favoriteGame,),
-                body: GameDetailBodyWidget(game: game, gameDetail: gameDetail));
-            } else if (snapshot.hasError) {
-              return Text("${snapshot.error}",
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      fontSize: 18.0));
-            }
-            return const Scaffold(
-                backgroundColor: Color(0xFF121212),
-                // appBar: GameDetailAppBar(gameId: game.id, favoriteGame: favoriteGame,),
-                body: Center(child: CircularProgressIndicator())
-            );
-          },
-        );
+      future: _futureGameDetail,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          GameDetail? gameDetail = snapshot.data;
+          return Scaffold(
+              backgroundColor: ProjectColors.background,
+              appBar: GameDetailAppBar(
+                gameId: game.id,
+                gameDetail: gameDetail,
+                favoriteGame: favoriteGame,
+              ),
+              body: GameDetailBodyWidget(game: game, gameDetail: gameDetail));
+        } else if (snapshot.hasError) {
+          return Scaffold(
+              backgroundColor: ProjectColors.background,
+              // appBar: GameDetailAppBar(gameId: game.id, favoriteGame: favoriteGame,),
+              body: Column(
+                children: [
+                  const SizedBox(height: 180),
+                  Container(
+                    margin: const EdgeInsets.all(30.0),
+                    child: const Icon(
+                      Icons.signal_wifi_off,
+                      size: 100.0,
+                      color: ProjectColors.gray,
+                    ),
+                  ),
+                  Container(
+                     padding: const EdgeInsets.all(30.0),
+                      child: Text("${snapshot.error}",
+                        textAlign: TextAlign.center,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              fontSize: 18.0))),
+                ],
+              ));
+        }
+        return const Scaffold(
+            backgroundColor: Color(0xFF121212),
+            // appBar: GameDetailAppBar(gameId: game.id, favoriteGame: favoriteGame,),
+            body: Center(child: CircularProgressIndicator()));
+      },
+    );
   }
 }
 
@@ -199,14 +221,13 @@ class GameDetailBodyWidget extends StatelessWidget {
 }
 
 // ignore: must_be_immutable
-class GameDetailAppBar extends StatefulWidget  implements PreferredSizeWidget{
-
+class GameDetailAppBar extends StatefulWidget implements PreferredSizeWidget {
   GameDetail? gameDetail;
   int gameId;
   Future<bool> Function(int, bool) favoriteGame;
 
   GameDetailAppBar({
-    Key? key, 
+    Key? key,
     required this.favoriteGame,
     this.gameDetail,
     required this.gameId,
@@ -220,7 +241,6 @@ class GameDetailAppBar extends StatefulWidget  implements PreferredSizeWidget{
 }
 
 class _GameDetailAppBarState extends State<GameDetailAppBar> {
-
   bool _favorite = false;
 
   @override
@@ -228,37 +248,39 @@ class _GameDetailAppBarState extends State<GameDetailAppBar> {
     if (widget.gameDetail != null && widget.gameDetail!.favorite) {
       _favorite = true;
     }
-    
+
     super.initState();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return AppBar(
-          backgroundColor: ProjectColors.background,
-          elevation: 0.0,
-          title: const Center(
-            child: Image(
-              image: AssetImage('assets/images/main_logo.png'),
-              height: 50.0,
-            ),
-          ),
-          leading: IconButton(
-            padding: const EdgeInsets.only(left: 30.0),
-            onPressed: () => Navigator.pop(context),
-            icon: const Icon(Icons.arrow_back_outlined),
-            iconSize: 26.0,
-            color: ProjectColors.gray,
-          ),
-          actions: <Widget>[
-            IconButton(
-              padding: const EdgeInsets.only(right: 30.0),
-              onPressed: updateFavoriteState,
-              icon: _favorite ? const Icon(Icons.favorite) : const Icon(Icons.favorite_border),
-              iconSize: 26.0,
-              color: _favorite ? ProjectColors.primary : ProjectColors.gray,
-            ),
-          ],
+      backgroundColor: ProjectColors.background,
+      elevation: 0.0,
+      title: const Center(
+        child: Image(
+          image: AssetImage('assets/images/main_logo.png'),
+          height: 50.0,
+        ),
+      ),
+      leading: IconButton(
+        padding: const EdgeInsets.only(left: 30.0),
+        onPressed: () => Navigator.pop(context),
+        icon: const Icon(Icons.arrow_back_outlined),
+        iconSize: 26.0,
+        color: ProjectColors.gray,
+      ),
+      actions: <Widget>[
+        IconButton(
+          padding: const EdgeInsets.only(right: 30.0),
+          onPressed: updateFavoriteState,
+          icon: _favorite
+              ? const Icon(Icons.favorite)
+              : const Icon(Icons.favorite_border),
+          iconSize: 26.0,
+          color: _favorite ? ProjectColors.primary : ProjectColors.gray,
+        ),
+      ],
     );
   }
 
@@ -278,15 +300,16 @@ class _GameDetailAppBarState extends State<GameDetailAppBar> {
 }
 
 Future<bool> favoriteGame(int gameId, bool currentButtonStatus) async {
-  String url = "https://free2play-api.herokuapp.com/api/games/$gameId/favorite/";
+  String url =
+      "https://free2play-api.herokuapp.com/api/games/$gameId/favorite/";
   Map<String, String> headers = {
-		"Authorization": "Token 5848cbc484d7138d4f726e34c685f160e3fc868a"
+    "Authorization": "Token 5848cbc484d7138d4f726e34c685f160e3fc868a"
   };
   final bool connectionStatus = await Utils.getConnectionStatus();
-  // final db = await getDatabase();
+  final db = await getDatabase();
   // const tableName = "favorites";
+  http.Response response;
   if (connectionStatus) {
-    http.Response response;
     if (currentButtonStatus == true) {
       response = await http.delete(Uri.parse(url), headers: headers);
     } else {
@@ -297,6 +320,17 @@ Future<bool> favoriteGame(int gameId, bool currentButtonStatus) async {
     }
     throw Exception("Erro ao executar. Tente novamente mais tarde.");
   }
-  throw Exception("Função indisponível no momento.");
+
+  if (currentButtonStatus == true) {
+    await updateOrCreate(
+        "syncQueue", SyncQueue(id: 1, url: url, method: "DELETE"), db);
+    await deleteRow("favorites", gameId, db);
+  } else {
+    await updateOrCreate(
+        "syncQueue", SyncQueue(id: 1, url: url, method: "PUT"), db);
+    await updateOrCreate("favorites", RowQuery(id: gameId), db);
+  }
+  return !currentButtonStatus;
+
   // return !currentButtonStatus;
 }

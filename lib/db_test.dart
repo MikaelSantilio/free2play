@@ -25,7 +25,7 @@ Future<Database> getDatabase() async {
         'CREATE TABLE gamesRow01(id INTEGER PRIMARY KEY)',
       );
       db.execute(
-        'CREATE TABLE syncQueue(id INTEGER PRIMARY KEY, url TEXT, bodyJson TEXT)',
+        'CREATE TABLE syncQueue(id INTEGER PRIMARY KEY AUTOINCREMENT, url TEXT, method TEXT)',
       );
     },
     version: 1,
@@ -50,6 +50,17 @@ Future<Database> getDatabase() async {
     });
     // final List<Map<String, dynamic>> maps = await db.rawQuery('SELECT * FROM $tableName where id in ')
     // return maps.map<Game>((json) => Game.fromMap(json)).toList();
+  }
+  Future<List<SyncQueue>> syncQueueQuery(Database db, String tableName) async {
+    final List<Map<String, dynamic>> maps = await db.query(tableName);
+
+    return List.generate(maps.length, (i) {
+      return SyncQueue(
+        id: maps[i]['id'],
+        url: maps[i]['url'],
+        method: maps[i]['method'],
+      );
+    });
   }
 
   Future<GameDetail> gameDetailQuery(dynamic game, Database db, {String tableName = 'gamesDetail'}) async {
@@ -123,6 +134,58 @@ Future<Database> getDatabase() async {
   }
 
 
+  Future<void> deleteRow(String tableName, int id, Database db) async {
+      if (await exists(tableName, RowQuery(id: id), db)) {
+      await db.delete(
+      tableName,
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+    } 
+  }
+
+//   Future<void> syncDatabases() async {
+//   Map<String, String> headers = {
+// 		"Authorization": "Token 5848cbc484d7138d4f726e34c685f160e3fc868a"
+//   };
+//   final db = await getDatabase();
+//   const tableName = "syncQueue";
+//   final queue = await syncQueueQuery(db, tableName);
+//   queue.sort((a, b) => a.id.compareTo(b.id));
+//   final bool connectionStatus = await getConnectionStatus();
+//   http.Response response;
+//   if (connectionStatus) {
+//     for (var item in queue) {
+//       if (item.method.toUpperCase() == "PUT") {
+//         response = await http.put(Uri.parse(item.url), headers: headers);
+//       } else {
+//         response = await http.delete(Uri.parse(item.url), headers: headers);
+//       }
+//       await deleteRow(tableName, item.id, db);
+//     }
+//   }
+// }
+
+class SyncQueue {
+  final int id;
+  final String url;
+  final String method;
+
+  SyncQueue({
+    required this.id,
+    required this.url,
+    required this.method,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'url': url,
+      'method': method,
+    };
+  }
+
+
+}
 
 class RowQuery {
   final int id;
