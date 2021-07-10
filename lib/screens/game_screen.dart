@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:free2play/models/game_detail_model.dart';
 import 'package:free2play/models/game_model.dart';
-
+import 'package:http/http.dart' as http;
+// import 'package:free2play/models/nested_models.dart';
+import 'package:free2play/utils.dart';
+import 'package:free2play/db_test.dart';
 import 'dart:convert';
 // import 'dart:typed_data';
 import 'package:flutter/widgets.dart';
@@ -38,13 +41,8 @@ class _DetailScreenState extends State<DetailScreen> {
               GameDetail? gameDetail = snapshot.data;
               return Scaffold(
                 backgroundColor: const Color(0xFF121212),
-                appBar: GameDetailAppBar(
-                  gameDetail: gameDetail,
-                  context: context,
-                  favoriteGame: () => print("favoritar"),
-                ),
-                body: GameDetailBodyWidget(game: game, gameDetail: gameDetail
-              ));
+                appBar: GameDetailAppBar(gameId: game.id, gameDetail: gameDetail, favoriteGame: favoriteGame,),
+                body: GameDetailBodyWidget(game: game, gameDetail: gameDetail));
             } else if (snapshot.hasError) {
               return Text("${snapshot.error}",
                   style: const TextStyle(
@@ -52,10 +50,10 @@ class _DetailScreenState extends State<DetailScreen> {
                       color: Colors.white,
                       fontSize: 18.0));
             }
-            return Scaffold(
-                backgroundColor: const Color(0xFF121212),
-                appBar: GameDetailAppBar(context: context, favoriteGame: () => print("carregando"),),
-                body: const Center(child: CircularProgressIndicator())
+            return const Scaffold(
+                backgroundColor: Color(0xFF121212),
+                // appBar: GameDetailAppBar(gameId: game.id, favoriteGame: favoriteGame,),
+                body: Center(child: CircularProgressIndicator())
             );
           },
         );
@@ -200,49 +198,105 @@ class GameDetailBodyWidget extends StatelessWidget {
   }
 }
 
-
-
 // ignore: must_be_immutable
-class GameDetailAppBar extends AppBar {
+class GameDetailAppBar extends StatefulWidget  implements PreferredSizeWidget{
 
-  BuildContext context;
   GameDetail? gameDetail;
-  void Function()? favoriteGame;
+  int gameId;
+  Future<bool> Function(int, bool) favoriteGame;
 
   GameDetailAppBar({
     Key? key, 
-    required this.context,
     required this.favoriteGame,
-    this.gameDetail
-  }):super(key: key, 
-    // iconTheme: IconThemeData(
-    //   color: Colors.black, //change your color here
-    // ),
-          backgroundColor: const Color(0xFF121212),
+    this.gameDetail,
+    required this.gameId,
+  }) : super(key: key);
+
+  @override
+  Size get preferredSize => const Size.fromHeight(100);
+
+  @override
+  _GameDetailAppBarState createState() => _GameDetailAppBarState();
+}
+
+class _GameDetailAppBarState extends State<GameDetailAppBar> {
+
+  bool _favorite = false;
+
+  @override
+  void initState() {
+    if (widget.gameDetail != null && widget.gameDetail!.favorite) {
+      _favorite = true;
+    }
+    
+    super.initState();
+  }
+  
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+          backgroundColor: ProjectColors.background,
           elevation: 0.0,
           title: const Center(
             child: Image(
               image: AssetImage('assets/images/main_logo.png'),
               height: 50.0,
-              // width: 150.0,
             ),
           ),
           leading: IconButton(
             padding: const EdgeInsets.only(left: 30.0),
             onPressed: () => Navigator.pop(context),
-            icon: const Icon(Icons.arrow_back),
-            iconSize: 30.0,
-            color: Colors.white,
+            icon: const Icon(Icons.arrow_back_outlined),
+            iconSize: 26.0,
+            color: ProjectColors.gray,
           ),
           actions: <Widget>[
             IconButton(
               padding: const EdgeInsets.only(right: 30.0),
-              onPressed: favoriteGame,
-              icon: gameDetail != null && gameDetail.favorite ? const Icon(Icons.favorite) : const Icon(Icons.favorite_border_outlined),
-              iconSize: 30.0,
-              color: Colors.white,
+              onPressed: updateFavoriteState,
+              icon: _favorite ? const Icon(Icons.favorite) : const Icon(Icons.favorite_border),
+              iconSize: 26.0,
+              color: _favorite ? ProjectColors.primary : ProjectColors.gray,
             ),
           ],
-  );
+    );
+  }
+
+  void updateFavoriteState() async {
+    final bool response = await widget.favoriteGame(widget.gameId, _favorite);
+    if (response) {
+      setState(() {
+        _favorite = true;
+      });
+      return;
+    }
+    setState(() {
+      _favorite = false;
+    });
+    return;
+  }
 }
 
+Future<bool> favoriteGame(int gameId, bool currentButtonStatus) async {
+  String url = "https://free2play-api.herokuapp.com/api/games/$gameId/favorite/";
+  Map<String, String> headers = {
+		"Authorization": "Token 5848cbc484d7138d4f726e34c685f160e3fc868a"
+  };
+  final bool connectionStatus = await Utils.getConnectionStatus();
+  // final db = await getDatabase();
+  // const tableName = "favorites";
+  if (connectionStatus) {
+    http.Response response;
+    if (currentButtonStatus == true) {
+      response = await http.delete(Uri.parse(url), headers: headers);
+    } else {
+      response = await http.put(Uri.parse(url), headers: headers);
+    }
+    if (response.statusCode == 204) {
+      return !currentButtonStatus;
+    }
+    throw Exception("Erro ao executar. Tente novamente mais tarde.");
+  }
+  throw Exception("Função indisponível no momento.");
+  // return !currentButtonStatus;
+}
