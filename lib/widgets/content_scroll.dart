@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:free2play/models/game.dart';
+import 'package:free2play/models/nested_models.dart';
 import 'package:free2play/utils.dart';
 import 'package:free2play/screens/detail.dart';
 // import 'dart:convert';
@@ -27,7 +28,7 @@ class GameScroll extends StatelessWidget {
     return Column(
       children: <Widget>[
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 40.0),
+          padding: const EdgeInsets.symmetric(horizontal: 40.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
@@ -137,3 +138,90 @@ class GameScroll extends StatelessWidget {
     );
   }
 }
+
+class ScreenshotScroll extends StatelessWidget {
+  List<Screenshot> screenshots;
+  final String title;
+  final double imageHeight;
+  final double imageWidth;
+
+  ScreenshotScroll({
+    Key? key,
+    required this.screenshots,
+    required this.title,
+    required this.imageHeight,
+    required this.imageWidth,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 40.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text(
+                title,
+                style: const TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white),
+              ),
+            ],
+          ),
+        ),
+        Container(
+          height: imageHeight,
+          child: ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  scrollDirection: Axis.horizontal,
+                  itemCount: screenshots.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const DetailScreen(),
+                            settings: RouteSettings(
+                              arguments: screenshots[index],
+                            ),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(
+                          horizontal: 12.0,
+                          vertical: 20.0,
+                        ),
+                        width: imageWidth,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8.0),
+                          child: CachedNetworkImage(
+                            imageUrl: screenshots[index].image,
+                            fit: BoxFit.cover,
+                            progressIndicatorBuilder:
+                                (context, url, downloadProgress) =>
+                                    CircularProgressIndicator(
+                                        value: downloadProgress.progress),
+                            errorWidget: (context, url, error) =>
+                                const Icon(
+                              Icons.signal_wifi_off,
+                              size: 30.0,
+                              color: ProjectColors.gray,
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+        ),
+      ],
+    );
+  }
+}
+

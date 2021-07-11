@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:free2play/models/game_detail.dart';
 import 'package:free2play/models/game.dart';
+import 'package:free2play/models/nested_models.dart';
 import 'package:http/http.dart' as http;
 import 'package:cached_network_image/cached_network_image.dart';
 // import 'package:free2play/models/nested_models.dart';
 import 'package:free2play/utils.dart';
 import 'package:free2play/db_test.dart';
+import 'package:free2play/widgets/content_scroll.dart';
 // import 'dart:convert';
 // import 'dart:typed_data';
 import 'package:flutter/widgets.dart';
@@ -47,7 +49,7 @@ class _DetailScreenState extends State<DetailScreen> {
                 gameDetail: gameDetail,
                 favoriteGame: favoriteGame,
               ),
-              body: GameDetailBodyWidget(game: game, gameDetail: gameDetail));
+              body: GameDetailBodyWidget(game: game, gameDetail: gameDetail,));
         } else if (snapshot.hasError) {
           return Scaffold(
               backgroundColor: ProjectColors.background,
@@ -87,6 +89,9 @@ class _DetailScreenState extends State<DetailScreen> {
 class GameDetailBodyWidget extends StatelessWidget {
   Game game;
   GameDetail? gameDetail;
+  final String title = "Screenshots";
+  final double imageHeight = 150.0;
+  final double imageWidth = 200.0;
 
   GameDetailBodyWidget({
     Key? key,
@@ -226,6 +231,17 @@ class GameDetailBodyWidget extends StatelessWidget {
               ),
             ],
           ),
+        ),
+        Container(
+          margin: const EdgeInsets.symmetric(
+            horizontal: 12.0,
+            vertical: 20.0,
+          ),
+          child: ScreenshotScroll(
+            screenshots: gameDetail!.screenshots,
+            title: title,
+            imageHeight: imageHeight,
+            imageWidth: imageWidth),
         )
       ],
     );

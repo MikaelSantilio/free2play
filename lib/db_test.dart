@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:free2play/models/game_detail.dart';
 import 'package:free2play/models/game.dart';
+import 'package:free2play/models/nested_models.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -13,10 +14,16 @@ Future<Database> getDatabase() async {
     join(await getDatabasesPath(), 'free2play.db'),
     onCreate: (db, version) {
       db.execute(
-        'CREATE TABLE games(id INTEGER PRIMARY KEY, title TEXT, thumbnailUrl TEXT, genre TEXT, platform TEXT)',
+        'CREATE TABLE ${Game.tableName}(id INTEGER PRIMARY KEY, title TEXT, thumbnailUrl TEXT, genre TEXT, platform TEXT)',
       );
       db.execute(
-        'CREATE TABLE gamesDetail(id INTEGER PRIMARY KEY, title TEXT, thumbnailUrl TEXT, genre TEXT, platform TEXT, description TEXT)',
+        'CREATE TABLE ${GameDetail.tableName}(id INTEGER PRIMARY KEY, title TEXT, thumbnailUrl TEXT, genre TEXT, platform TEXT, description TEXT)',
+      );
+      db.execute(
+        'CREATE TABLE ${Screenshot.tableName}(id INTEGER PRIMARY KEY AUTOINCREMENT, idGame INTEGER, idScreenshot INTEGER, image TEXT)',
+      );
+      db.execute(
+        'CREATE TABLE ${SystemRequirements.tableName}(idGame INTEGER PRIMARY KEY, os TEXT, processor TEXT, memory TEXT, graphics TEXT, storage TEXT)',
       );
       db.execute(
         'CREATE TABLE favorites(id INTEGER PRIMARY KEY)',
@@ -65,15 +72,47 @@ Future<Database> getDatabase() async {
       );
     });
   }
+  List<Screenshot> parseScreenshot(List<Map<String, dynamic>> query) {
+    return List.generate(query.length, (i) {
+      return Screenshot(
+        id: query[i]['id'],
+        image: query[i]['image'],
+      );
+    });
+  }
 
   Future<GameDetail> gameDetailQuery(dynamic game, Database db, {String tableName = 'gamesDetail'}) async {
+    final systemRequirementsMaps = await db.query(
+        SystemRequirements.tableName,
+        where: 'idGame = ?',
+        whereArgs: [game.id],
+      );
+    final screenshotMaps = await db.query(
+        Screenshot.tableName,
+        where: 'idGame = ?',
+        whereArgs: [game.id],
+      );
     final gameDetailMaps = await db.query(
-        tableName,
+        GameDetail.tableName,
         where: 'id = ?',
         whereArgs: [game.id],
       );
     GameDetail gameDetail;
+    if (systemRequirementsMaps.isEmpty) {
+      throw("Desculpe, tivemos problemas ao exibir o jogo. Contate o suporte."); 
+    }
+    if (screenshotMaps.isEmpty) {
+      throw("Desculpe, tivemos problemas ao exibir o jogo. Contate o suporte."); 
+    }
     if (gameDetailMaps.isNotEmpty) {
+      SystemRequirements requirements = SystemRequirements(
+        os: systemRequirementsMaps.first["os"] as String, 
+        processor: systemRequirementsMaps.first["processor"] as String, 
+        memory: systemRequirementsMaps.first["memory"] as String, 
+        graphics: systemRequirementsMaps.first["graphics"] as String, 
+        storage: systemRequirementsMaps.first["storage"] as String
+      );
+
        gameDetail = GameDetail (
         id: gameDetailMaps.first['id'] as int,
         title: gameDetailMaps.first['title'] as String,
@@ -81,6 +120,8 @@ Future<Database> getDatabase() async {
         genre: gameDetailMaps.first['genre'] as String,
         platform: gameDetailMaps.first['platform'] as String,
         description: gameDetailMaps.first['description'] as String,
+        screenshots: parseScreenshot(screenshotMaps),
+        minimumSystemRequirements: requirements
       );
        if (await exists("favorites", RowQuery(id: game.id), db)) {
           gameDetail.favorite = true;
@@ -98,10 +139,37 @@ Future<Database> getDatabase() async {
   }
 
   Future<bool> exists(String tableName, dynamic object, Database db, {String field = 'id'}) async {
+    // Map<String, dynamic> s = {
+    //   "id": 1
+    // }
+    // {Map<String, dynamic> fields = {"id" : 1}}
+    // 'id IN (${ids.join(', ')})'
     final result = await db.query(
       tableName,
       where: '$field = ?',
       whereArgs: [object.id],
+    );
+    if (result.isEmpty) {
+      return false;
+    }
+    return true;
+  }
+  Future<bool> existsScreenshot(int idGame, Screenshot object, Database db) async {
+    final result = await db.query(
+      Screenshot.tableName,
+      where: 'idGame = ? AND idScreenshot = ?',
+      whereArgs: [idGame, object.id],
+    );
+    if (result.isEmpty) {
+      return false;
+    }
+    return true;
+  }
+  Future<bool> existsRequirement(int idGame, SystemRequirements object, Database db) async {
+    final result = await db.query(
+      SystemRequirements.tableName,
+      where: 'idGame = ?',
+      whereArgs: [idGame],
     );
     if (result.isEmpty) {
       return false;
@@ -132,6 +200,64 @@ Future<Database> getDatabase() async {
     );
     // ignore: avoid_print
     print("$tableName ${object.id} created");
+    }
+  }
+
+  Future<void> updateOrCreateGameDetail(GameDetail object, Database db) async {
+    if (await exists(GameDetail.tableName, object, db)) {
+      await db.update(
+      GameDetail.tableName,
+      object.toMap(),
+      where: 'id = ?',
+      whereArgs: [object.id],
+    );
+    await updateOrCreateRequirements(object.id, object.minimumSystemRequirements, db);
+    for (var shot in object.screenshots) {
+      await updateOrCreateScreenshot(object.id, shot, db);
+    }
+      
+    } else {
+      await db.insert(
+      GameDetail.tableName,
+      object.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+    await updateOrCreateRequirements(object.id, object.minimumSystemRequirements, db);
+    for (var shot in object.screenshots) {
+      await updateOrCreateScreenshot(object.id, shot, db);
+    }}
+  }
+
+  Future<void> updateOrCreateScreenshot(int gameId, Screenshot screenshot, Database db) async {
+    if (await existsScreenshot(gameId, screenshot, db)) {
+      await db.update(
+      Screenshot.tableName,
+      screenshot.toMap(gameId),
+      where: 'idGame = ?',
+      whereArgs: [gameId],
+    );
+    } else {
+      await db.insert(
+      Screenshot.tableName,
+      screenshot.toMap(gameId),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+    }
+  }
+  Future<void> updateOrCreateRequirements(int gameId, SystemRequirements requirements, Database db) async {
+    if (await existsRequirement(gameId, requirements, db)) {
+      await db.update(
+      SystemRequirements.tableName,
+      requirements.toMap(gameId),
+      where: 'idGame = ?',
+      whereArgs: [gameId],
+    );
+    } else {
+      await db.insert(
+      SystemRequirements.tableName,
+      requirements.toMap(gameId),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
     }
   }
 

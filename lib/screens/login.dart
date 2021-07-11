@@ -27,7 +27,6 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     };
     super.initState();
-    print("initi state");
   }
 
   @override
@@ -50,7 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   padding: const EdgeInsets.all(10),
                   child: ListView(
                     children: <Widget>[
-                      SizedBox(
+                      const SizedBox(
                         height: 100,
                       ),
                       Container(

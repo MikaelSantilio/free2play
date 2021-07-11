@@ -11,6 +11,7 @@ class Game {
   final String thumbnailUrl;
   final String genre;
   final String platform;
+  static String tableName = "games";
 
   Game({
     required this.id,

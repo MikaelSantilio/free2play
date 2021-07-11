@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:free2play/utils.dart';
+import 'package:free2play/models/nested_models.dart';
 import 'package:free2play/db_test.dart';
 
 class GameDetail {
@@ -12,7 +13,9 @@ class GameDetail {
   final String platform;
   final String description;
   bool favorite = false;
-  // final SystemRequirements minimumSystemRequirements;
+  final SystemRequirements minimumSystemRequirements;
+  final List<Screenshot> screenshots;
+  static String tableName = "gamesDetail";
 
   GameDetail({
     required this.id,
@@ -20,8 +23,9 @@ class GameDetail {
     required this.thumbnailUrl,
     required this.genre,
     required this.platform,
-    // required this.minimumSystemRequirements,
+    required this.minimumSystemRequirements,
     required this.description,
+    required this.screenshots,
     // required this.favorite,
   });
   factory GameDetail.fromJson(Map<String, dynamic> json) {
@@ -32,7 +36,8 @@ class GameDetail {
       description: json['description'] as String,
       genre: json['genre'] as String,
       platform: json['platform'] as String,
-      // minimumSystemRequirements: SystemRequirements.fromJson(json['minimum_system_requirements']),
+      minimumSystemRequirements: SystemRequirements.fromJson(json['minimum_system_requirements']),
+      screenshots: json['screenshots'].map<Screenshot>((json) => Screenshot.fromJson(json)).toList(),
     );
   }
   Map<String, dynamic> toMap() {
@@ -55,13 +60,12 @@ class GameDetail {
     String url = "https://free2play-api.herokuapp.com/api/games/$gameId/";
     Map<String, String> headers = await API.getHeaders();
     final db = await getDatabase();
-    const tableName = "gamesDetail";
     final bool connectionStatus = await getConnectionStatus();
 
     if (connectionStatus) {
       final response = await http.get(Uri.parse(url), headers: headers);
       final parsedGameDetail = jsonParse(response.body);
-      await updateOrCreate(tableName, parsedGameDetail, db);
+      await updateOrCreateGameDetail(parsedGameDetail, db);
       return gameDetailQuery(parsedGameDetail, db);
     }
     return gameDetailQuery(RowQuery(id: gameId), db);

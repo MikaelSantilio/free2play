@@ -4,6 +4,7 @@ class SystemRequirements {
   final String memory;
   final String graphics;
   final String storage;
+  static String tableName = "systemRequirements";
 
   SystemRequirements({
     required this.os,
@@ -21,21 +22,39 @@ class SystemRequirements {
       storage: json['storage'] as String,
     );
   }
+  Map<String, dynamic> toMap(int idGame) {
+    return {
+      'idGame': idGame,
+      'os': os,
+      'processor': processor,
+      'memory': memory,
+      'graphics': graphics,
+      'storage': storage,
+    };
+  }
 }
 
 
 class Screenshot {
   final int id;
-  final String url;
+  final String image;
+  static String tableName = "screenshot";
 
   Screenshot({
     required this.id,
-    required this.url,
+    required this.image,
   });
   factory Screenshot.fromJson(Map<String, dynamic> json) {
     return Screenshot(
       id: json['id'] as int,
-      url: json['url'] as String,
+      image: json['image'] as String,
     );
+  }
+  Map<String, dynamic> toMap(int idGame) {
+    return {
+      'idScreenshot': id,
+      'idGame': idGame,
+      'image': image,
+    };
   }
 }
