@@ -19,6 +19,9 @@ class ProjectColors {
   static const Color gray = Colors.white70;
   static final Color danger = Colors.red.shade700;
   static final Color success = Colors.green.shade500;
+  static Color getWhiteRGBO({double opacity = 0.45}) {
+    return Color.fromRGBO(255, 255, 255, opacity);
+  }
 }
 
 class Utils {

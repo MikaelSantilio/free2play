@@ -2,26 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:free2play/utils.dart';
 
 void main() {
-  runApp(MaterialApp(
-    home: MyApp(),
+  runApp(const MaterialApp(
+    home: LoginScreen(),
   ));
 }
 
-class MyApp extends StatefulWidget {
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({Key? key}) : super(key: key);
+
   @override
-  _State createState() => _State();
+  _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _State extends State<MyApp> {
+class _LoginScreenState extends State<LoginScreen> {
   TextEditingController nameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  bool _obscureText = true;
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
         Image.asset(
-          "../assets/images/login_bg.png",
+          "assets/images/login_bg.png",
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
           fit: BoxFit.cover,
@@ -42,11 +45,11 @@ class _State extends State<MyApp> {
                       Container(
                           alignment: Alignment.center,
                           padding: const EdgeInsets.only(
-                              top: 10, bottom: 10, left: 25, right: 25),
+                              top: 15, bottom: 15, left: 25, right: 25),
                           child: const Image(
                             image:
-                                AssetImage("../assets/images/large_logo.png"),
-                            height: 100,
+                                AssetImage("assets/images/large_logo.png"),
+                            height: 130,
                           )),
                       Container(
                         height: 80,
@@ -56,7 +59,7 @@ class _State extends State<MyApp> {
                       Container(
                         height: 80,
                         padding: const EdgeInsets.only(top: 10, bottom: 10, left: 25, right: 25),
-                        child: customTextField(passwordController, "Password"),
+                        child: customTextField(passwordController, "Password", obscureText:true),
                       ),
                       Container(
                           height: 80,
@@ -85,26 +88,67 @@ class _State extends State<MyApp> {
       ],
     );
   }
-}
-
-TextField customTextField(TextEditingController? cntroller, String? txt) {
+  TextField customTextField(TextEditingController? cntroller, String? txt, {bool obscureText = false}) {
   return TextField(
     controller: cntroller,
-    style: const TextStyle(color: ProjectColors.foreground, fontSize: 20),
+    obscureText: obscureText && _obscureText,
+    autocorrect: false,
+    cursorColor: ProjectColors.primary,
+    style: const TextStyle(color: ProjectColors.foreground, fontSize: 18),
     decoration: InputDecoration(
+      suffixIcon: obscureText ? IconButton(
+      onPressed: () => {
+        setState(() { _obscureText = !_obscureText; })
+      },
+      icon: Icon(
+        obscureText && _obscureText ? Icons.visibility : Icons.visibility_off,
+        color: ProjectColors.getWhiteRGBO(opacity: 0.65),),
+    ) : null,
       contentPadding: const EdgeInsets.only(top: 40, bottom: 40, left: 20),
-      border: const OutlineInputBorder(
+      border: OutlineInputBorder(
           borderSide:
-              BorderSide(color: Color.fromRGBO(255, 255, 255, 0.45), width: 2)),
-      enabledBorder: const OutlineInputBorder(
+              BorderSide(color: ProjectColors.getWhiteRGBO(), width: 2)),
+      enabledBorder: OutlineInputBorder(
           borderSide:
-              BorderSide(color: Color.fromRGBO(255, 255, 255, 0.45), width: 2)),
+              BorderSide(color: ProjectColors.getWhiteRGBO(), width: 2)),
       focusedBorder: const OutlineInputBorder(
           borderSide:
-              BorderSide(color: Color.fromRGBO(72, 52, 212, 1), width: 2)),
-      labelStyle: const TextStyle(color: ProjectColors.foreground),
-      hintStyle: const TextStyle(color: ProjectColors.foreground),
+              BorderSide(color: ProjectColors.primary, width: 2)),
+      labelStyle: TextStyle(color: ProjectColors.getWhiteRGBO(opacity: 0.75)),
+      hintStyle: TextStyle(color: ProjectColors.getWhiteRGBO(opacity: 0.75)),
       labelText: txt,
     ),
   );
 }
+}
+
+// TextField customTextField(TextEditingController? cntroller, String? txt, {bool obscureText = false}) {
+//   return TextField(
+//     controller: cntroller,
+//     obscureText: obscureText && _obscureText,
+//     autocorrect: false,
+//     cursorColor: ProjectColors.primary,
+//     style: const TextStyle(color: ProjectColors.foreground, fontSize: 20),
+//     decoration: InputDecoration(
+//       suffixIcon: obscureText ? IconButton(
+//       onPressed: () => {
+        
+//       },
+//       icon: obscureText && _obscureText ? Icon(Icons.visibility) : Icon(Icons.visibility_off)
+//     ) : null,
+//       contentPadding: const EdgeInsets.only(top: 40, bottom: 40, left: 20),
+//       border: OutlineInputBorder(
+//           borderSide:
+//               BorderSide(color: ProjectColors.getWhiteRGBO(), width: 2)),
+//       enabledBorder: OutlineInputBorder(
+//           borderSide:
+//               BorderSide(color: ProjectColors.getWhiteRGBO(), width: 2)),
+//       focusedBorder: const OutlineInputBorder(
+//           borderSide:
+//               BorderSide(color: ProjectColors.primary, width: 2)),
+//       labelStyle: TextStyle(color: ProjectColors.getWhiteRGBO(opacity: 0.75)),
+//       hintStyle: TextStyle(color: ProjectColors.getWhiteRGBO(opacity: 0.75)),
+//       labelText: txt,
+//     ),
+//   );
+// }
