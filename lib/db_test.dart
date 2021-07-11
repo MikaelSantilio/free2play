@@ -13,16 +13,22 @@ Future<Database> getDatabase() async {
     join(await getDatabasesPath(), 'free2play.db'),
     onCreate: (db, version) {
       db.execute(
-        'CREATE TABLE games(id INTEGER PRIMARY KEY, title TEXT, thumbnailUrl TEXT, thumbnailBase64 TEXT, genre TEXT, platform TEXT)',
+        'CREATE TABLE games(id INTEGER PRIMARY KEY, title TEXT, thumbnailUrl TEXT, genre TEXT, platform TEXT)',
       );
       db.execute(
-        'CREATE TABLE gamesDetail(id INTEGER PRIMARY KEY, title TEXT, thumbnailUrl TEXT, thumbnailBase64 TEXT, genre TEXT, platform TEXT, description TEXT)',
+        'CREATE TABLE gamesDetail(id INTEGER PRIMARY KEY, title TEXT, thumbnailUrl TEXT, genre TEXT, platform TEXT, description TEXT)',
       );
       db.execute(
         'CREATE TABLE favorites(id INTEGER PRIMARY KEY)',
       );
       db.execute(
-        'CREATE TABLE gamesRow01(id INTEGER PRIMARY KEY)',
+        'CREATE TABLE ShooterRow(id INTEGER PRIMARY KEY)',
+      );
+      db.execute(
+        'CREATE TABLE RacingRow(id INTEGER PRIMARY KEY)',
+      );
+      db.execute(
+        'CREATE TABLE ZombieRow(id INTEGER PRIMARY KEY)',
       );
       db.execute(
         'CREATE TABLE syncQueue(id INTEGER PRIMARY KEY AUTOINCREMENT, url TEXT, method TEXT)',
@@ -43,7 +49,6 @@ Future<Database> getDatabase() async {
         id: maps[i]['id'],
         title: maps[i]['title'],
         thumbnailUrl: maps[i]['thumbnailUrl'],
-        thumbnailBase64: maps[i]['thumbnailBase64'],
         genre: maps[i]['genre'],
         platform: maps[i]['platform'],
       );
@@ -73,7 +78,6 @@ Future<Database> getDatabase() async {
         id: gameDetailMaps.first['id'] as int,
         title: gameDetailMaps.first['title'] as String,
         thumbnailUrl: gameDetailMaps.first['thumbnailUrl'] as String,
-        thumbnailBase64: gameDetailMaps.first['thumbnailBase64'] as String,
         genre: gameDetailMaps.first['genre'] as String,
         platform: gameDetailMaps.first['platform'] as String,
         description: gameDetailMaps.first['description'] as String,

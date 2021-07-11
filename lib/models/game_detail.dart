@@ -8,7 +8,6 @@ class GameDetail {
   final int id;
   final String title;
   final String thumbnailUrl;
-  final String thumbnailBase64;
   final String genre;
   final String platform;
   final String description;
@@ -19,7 +18,6 @@ class GameDetail {
     required this.id,
     required this.title,
     required this.thumbnailUrl,
-    required this.thumbnailBase64,
     required this.genre,
     required this.platform,
     // required this.minimumSystemRequirements,
@@ -31,7 +29,6 @@ class GameDetail {
       id: json['id'] as int,
       title: json['title'] as String,
       thumbnailUrl: json['thumbnail'] as String,
-      thumbnailBase64: json['thumbnail_base64'] as String,
       description: json['description'] as String,
       genre: json['genre'] as String,
       platform: json['platform'] as String,
@@ -43,7 +40,6 @@ class GameDetail {
       'id': id,
       'title': title,
       'thumbnailUrl': thumbnailUrl,
-      'thumbnailBase64': thumbnailBase64,
       'genre': genre,
       'platform': platform,
       'description': description,

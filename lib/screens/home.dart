@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:free2play/models/game.dart';
 import 'package:free2play/widgets/content_scroll.dart';
 import 'package:free2play/utils.dart';
-import 'package:free2play/screens/login.dart';
+// import 'package:free2play/screens/login.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -15,6 +15,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   Future<List<Game>>? _futureFavoriteGames;
   Future<List<Game>>? _futureShooterGames;
+  Future<List<Game>>? _futureRacingGames;
+  Future<List<Game>>? _futureZombieGames;
   Future<Map<String, dynamic>>? _connectionText;
 
   @override
@@ -35,7 +37,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void updateFutureRows() {
     _futureShooterGames = Game.fetchData(
-        "https://free2play-api.herokuapp.com/api/games/search?platform=browser&category=Shooter", "gamesRow01");
+        "https://www.freetogame.com/api/filter?tag=shooter&platform=browser", "ShooterRow");
+    _futureRacingGames = Game.fetchData(
+        "https://www.freetogame.com/api/filter?tag=racing", "RacingRow");
+    _futureZombieGames = Game.fetchData(
+        "https://www.freetogame.com/api/filter?tag=zombie", "ZombieRow");
     _futureFavoriteGames = Game.fetchData(
         "https://free2play-api.herokuapp.com/api/games/favorites/", "favorites");
   }
@@ -126,7 +132,21 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(height: 10.0),
           GameScroll(
             futureGames: _futureShooterGames,
-            title: 'Windows',
+            title: 'Shooter for Web',
+            imageHeight: 150.0,
+            imageWidth: 200.0,
+          ),
+          const SizedBox(height: 10.0),
+          GameScroll(
+            futureGames: _futureRacingGames,
+            title: 'Racing',
+            imageHeight: 150.0,
+            imageWidth: 200.0,
+          ),
+          const SizedBox(height: 10.0),
+          GameScroll(
+            futureGames: _futureZombieGames,
+            title: 'Zombies',
             imageHeight: 150.0,
             imageWidth: 200.0,
           ),

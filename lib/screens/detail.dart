@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:free2play/models/game_detail.dart';
 import 'package:free2play/models/game.dart';
 import 'package:http/http.dart' as http;
+import 'package:cached_network_image/cached_network_image.dart';
 // import 'package:free2play/models/nested_models.dart';
 import 'package:free2play/utils.dart';
 import 'package:free2play/db_test.dart';
-import 'dart:convert';
+// import 'dart:convert';
 // import 'dart:typed_data';
 import 'package:flutter/widgets.dart';
 // import 'package:free2playnew/widgets/circular_clipper.dart';
@@ -110,9 +111,20 @@ class GameDetailBodyWidget extends StatelessWidget {
                   margin: const EdgeInsets.only(top: 18, left: 2),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(7.0),
-                    child: Image.memory(
-                        base64Decode(gameDetail!.thumbnailBase64),
-                        fit: BoxFit.cover),
+                    child: CachedNetworkImage(
+                                imageUrl: gameDetail!.thumbnailUrl,
+                                fit: BoxFit.cover,
+                                progressIndicatorBuilder:
+                                    (context, url, downloadProgress) =>
+                                        CircularProgressIndicator(
+                                            value: downloadProgress.progress),
+                                errorWidget: (context, url, error) =>
+                                    const Icon(
+                                  Icons.signal_wifi_off,
+                                  size: 30.0,
+                                  color: ProjectColors.gray,
+                                ),
+                              ),
                   ),
                 ),
               ),
@@ -146,7 +158,7 @@ class GameDetailBodyWidget extends StatelessWidget {
                               child: Container(
                                   color: const Color(0xFF4834D4),
                                   child: Padding(
-                                    padding: EdgeInsets.all(3.5),
+                                    padding: const EdgeInsets.all(3.5),
                                     child: Text(
                                       game.genre,
                                       style: const TextStyle(
