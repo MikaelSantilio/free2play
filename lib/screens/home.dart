@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:free2play/models/game.dart';
 import 'package:free2play/widgets/content_scroll.dart';
 import 'package:free2play/utils.dart';
+import 'package:free2play/screens/login.dart';
 
 
 class HomeScreen extends StatefulWidget {
@@ -18,6 +19,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
+    // () async => {
+    //   if (await API.getToken() == "") {
+    //     Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //       builder: (context) => const LoginScreen(),
+    //     ),)
+    //   }
+    // };
     _connectionText = getConnectionText();
     super.initState();
     updateFutureRows();

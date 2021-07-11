@@ -49,7 +49,7 @@ class Game {
   }
 
   static Future<List<Game>> fetchData(String url, String tableName) async {
-    Map<String, String> headers = API.getHeaders();
+    Map<String, String> headers = await API.getHeaders();
     final bool connectionStatus = await getConnectionStatus();
     final db = await getDatabase();
 

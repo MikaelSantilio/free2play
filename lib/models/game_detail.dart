@@ -57,7 +57,7 @@ class GameDetail {
 
   static Future<GameDetail> fetchData(int gameId) async {
     String url = "https://free2play-api.herokuapp.com/api/games/$gameId/";
-    Map<String, String> headers = API.getHeaders();
+    Map<String, String> headers = await API.getHeaders();
     final db = await getDatabase();
     const tableName = "gamesDetail";
     final bool connectionStatus = await getConnectionStatus();
