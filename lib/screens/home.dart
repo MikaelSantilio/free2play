@@ -57,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: const EdgeInsets.only(left: 30.0),
             onPressed: () => print('Vazio'),
             icon: const Icon(Icons.arrow_back),
-            iconSize: 30.0,
+            iconSize: 26.0,
             color: const Color(0xFF121212),
           ),
         title: const Center(
@@ -75,8 +75,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 _connectionText = getConnectionText();
               }),
               icon: const Icon(Icons.sync),
-              iconSize: 30.0,
-              color: Colors.white,
+              iconSize: 26.0,
+              color: ProjectColors.getWhiteRGBO(opacity: 0.8),
             ),
           ],
       ),

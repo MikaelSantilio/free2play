@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:free2play/utils.dart';
 import 'package:free2play/models/nested_models.dart';
 import 'package:free2play/db_test.dart';
+import 'dart:typed_data';
 
 class GameDetail {
   final int id;
@@ -64,15 +64,15 @@ class GameDetail {
 
     if (connectionStatus) {
       final response = await http.get(Uri.parse(url), headers: headers);
-      final parsedGameDetail = jsonParse(response.body);
+      final parsedGameDetail = jsonParse(response.bodyBytes);
       await updateOrCreateGameDetail(parsedGameDetail, db);
       return gameDetailQuery(parsedGameDetail, db);
     }
     return gameDetailQuery(RowQuery(id: gameId), db);
   }
 
-  static GameDetail jsonParse(String responseBody) {
-    final parsedJson = jsonDecode(responseBody);
+  static GameDetail jsonParse(Uint8List bodyBytes) {
+    final parsedJson = API.jsonUtf8Decode(bodyBytes);
     return GameDetail.fromJson(parsedJson);
   }
 }

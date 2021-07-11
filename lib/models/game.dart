@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:free2play/utils.dart';
 import 'package:free2play/db_test.dart';
+import 'dart:typed_data';
 
 class Game {
   final int id;
@@ -52,7 +52,7 @@ class Game {
 
     if (connectionStatus) {
       final response = await http.get(Uri.parse(url), headers: headers);
-      final parsedGames = await compute(jsonParse, response.body);
+      final parsedGames = jsonParse(response.bodyBytes);
       await deleteAllRows(tableName, db);
 
       for (var game in parsedGames) {
@@ -66,8 +66,8 @@ class Game {
     return gamesQuery(ids, db);
   }
 
-  static List<Game> jsonParse(String responseBody) {
-    final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
+  static List<Game> jsonParse(Uint8List bodyBytes) {
+    final parsed = API.jsonUtf8Decode(bodyBytes).cast<Map<String, dynamic>>();
     return parsed.map<Game>((json) => Game.fromJson(json)).toList();
   }
 }

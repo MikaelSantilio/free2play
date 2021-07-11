@@ -158,7 +158,7 @@ class ScreenshotScroll extends StatelessWidget {
     return Column(
       children: <Widget>[
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 40.0),
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
@@ -175,7 +175,7 @@ class ScreenshotScroll extends StatelessWidget {
         Container(
           height: imageHeight,
           child: ListView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   physics: const AlwaysScrollableScrollPhysics(),
                   scrollDirection: Axis.horizontal,
                   itemCount: screenshots.length,
@@ -205,8 +205,10 @@ class ScreenshotScroll extends StatelessWidget {
                             fit: BoxFit.cover,
                             progressIndicatorBuilder:
                                 (context, url, downloadProgress) =>
-                                    CircularProgressIndicator(
-                                        value: downloadProgress.progress),
+                                    Center(
+                                      child: CircularProgressIndicator(
+                                          value: downloadProgress.progress),
+                                    ),
                             errorWidget: (context, url, error) =>
                                 const Icon(
                               Icons.signal_wifi_off,

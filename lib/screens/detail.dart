@@ -104,16 +104,19 @@ class GameDetailBodyWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              flex: 5,
-              child: Padding(
-                padding: const EdgeInsets.all(6.0),
-                child: Container(
-                  margin: const EdgeInsets.only(top: 18, left: 2),
+        Container(
+          margin: const EdgeInsets.symmetric(
+            horizontal: 30.0,
+            vertical: 10.0,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                flex: 5,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 6.0),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(7.0),
                     child: CachedNetworkImage(
@@ -133,78 +136,75 @@ class GameDetailBodyWidget extends StatelessWidget {
                   ),
                 ),
               ),
-            ),
-            Expanded(
-              flex: 5,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(top: 18, bottom: 2),
-                    child: Text(
+              Expanded(
+                flex: 5,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
                       game.title,
                       style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                           fontSize: 22.0),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 18, bottom: 2),
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 4),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(5.0),
-                              child: Container(
-                                  color: const Color(0xFF4834D4),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(3.5),
-                                    child: Text(
-                                      game.genre,
-                                      style: const TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 12.0),
-                                    ),
-                                  )),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 4),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(5.0),
-                              child: Container(
-                                  width: 100,
-                                  color: const Color(0xFF4834D4),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(3.5),
-                                    child: Center(
+                    Padding(
+                      padding: const EdgeInsets.only(top: 18, bottom: 2),
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(left: 4),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(5.0),
+                                child: Container(
+                                    color: const Color(0xFF4834D4),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(3.5),
                                       child: Text(
-                                        game.platform,
+                                        game.genre,
                                         style: const TextStyle(
                                             color: Colors.white,
                                             fontWeight: FontWeight.bold,
                                             fontSize: 12.0),
                                       ),
-                                    ),
-                                  )),
+                                    )),
+                              ),
                             ),
-                          ),
-                        ]),
-                  ),
-                ],
+                            Padding(
+                              padding: const EdgeInsets.only(left: 4),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(5.0),
+                                child: Container(
+                                    width: 100,
+                                    color: const Color(0xFF4834D4),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(3.5),
+                                      child: Center(
+                                        child: Text(
+                                          game.platform,
+                                          style: const TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 12.0),
+                                        ),
+                                      ),
+                                    )),
+                              ),
+                            ),
+                          ]),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
         Container(
           margin: const EdgeInsets.symmetric(
-            horizontal: 12.0,
+            horizontal: 30.0,
             vertical: 20.0,
           ),
           child: Column(
@@ -225,7 +225,7 @@ class GameDetailBodyWidget extends StatelessWidget {
                   child: Text(
                     gameDetail!.description,
                     style:
-                        const TextStyle(color: Colors.white54, fontSize: 18.0),
+                        TextStyle(color: ProjectColors.getWhiteRGBO(opacity: 0.7), fontSize: 18.0),
                   ),
                 ),
               ),
