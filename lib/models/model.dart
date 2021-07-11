@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';
-import 'package:free2play/models/game_detail_model.dart';
-import 'package:free2play/models/game_model.dart';
+import 'package:free2play/models/game_detail.dart';
+import 'package:free2play/models/game.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 

@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';
-import 'package:free2play/models/game_detail_model.dart';
-import 'package:free2play/models/game_model.dart';
+import 'package:free2play/models/game_detail.dart';
+import 'package:free2play/models/game.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -48,8 +48,6 @@ Future<Database> getDatabase() async {
         platform: maps[i]['platform'],
       );
     });
-    // final List<Map<String, dynamic>> maps = await db.rawQuery('SELECT * FROM $tableName where id in ')
-    // return maps.map<Game>((json) => Game.fromMap(json)).toList();
   }
   Future<List<SyncQueue>> syncQueueQuery(Database db, String tableName) async {
     final List<Map<String, dynamic>> maps = await db.query(tableName);

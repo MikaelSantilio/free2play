@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:free2play/models/game_detail_model.dart';
-import 'package:free2play/models/game_model.dart';
+import 'package:free2play/models/game_detail.dart';
+import 'package:free2play/models/game.dart';
 import 'package:http/http.dart' as http;
 // import 'package:free2play/models/nested_models.dart';
 import 'package:free2play/utils.dart';
@@ -32,7 +32,7 @@ class _DetailScreenState extends State<DetailScreen> {
   @override
   Widget build(BuildContext context) {
     final game = ModalRoute.of(context)!.settings.arguments as Game;
-    _futureGameDetail = fetchGameDetailData(game.id);
+    _futureGameDetail = GameDetail.fetchData(game.id);
 
     return FutureBuilder<GameDetail>(
       future: _futureGameDetail,

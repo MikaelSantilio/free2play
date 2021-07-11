@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:free2play/screens/home_screen.dart';
+import 'package:free2play/screens/home.dart';
 
 void main() => runApp(MyApp());
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:free2play/models/game_model.dart';
+import 'package:free2play/models/game.dart';
 import 'package:free2play/widgets/content_scroll.dart';
 import 'package:free2play/utils.dart';
 
@@ -24,9 +24,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void updateFutureRows() {
-    _futureShooterGames = fetchGamesData(
+    _futureShooterGames = Game.fetchData(
         "https://free2play-api.herokuapp.com/api/games/search?platform=browser&category=Shooter", "gamesRow01");
-    _futureFavoriteGames = fetchGamesData(
+    _futureFavoriteGames = Game.fetchData(
         "https://free2play-api.herokuapp.com/api/games/favorites/", "favorites");
   }
 

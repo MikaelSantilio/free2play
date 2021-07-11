@@ -1,33 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
-// import 'package:flutter/material.dart';
-// import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-// import 'package:free2play/models/nested_models.dart';
 import 'package:free2play/utils.dart';
 import 'package:free2play/db_test.dart';
-
-Future<GameDetail> fetchGameDetailData(int gameId) async {
-  String url = "https://free2play-api.herokuapp.com/api/games/$gameId/";
-  Map<String, String> headers = {
-		"Authorization": "Token 5848cbc484d7138d4f726e34c685f160e3fc868a"
-  };
-  final db = await getDatabase();
-  const tableName = "gamesDetail";
-  final bool connectionStatus = await getConnectionStatus();
-  if (connectionStatus) {
-    final response = await http.get(Uri.parse(url), headers: headers);
-    final parsedGameDetail = parseGameDetail(response.body);
-    await updateOrCreate(tableName, parsedGameDetail, db);
-    return gameDetailQuery(parsedGameDetail, db);
-  }
-  return gameDetailQuery(RowQuery(id: gameId), db);
-}
-
-GameDetail parseGameDetail(String responseBody) {
-  final parsedJson = jsonDecode(responseBody);
-  return GameDetail.fromJson(parsedJson);
-}
 
 class GameDetail {
   final int id;
@@ -74,8 +49,30 @@ class GameDetail {
       'description': description,
     };
   }
-    @override
+
+  @override
   String toString() {
     return 'GameDetail{id: $id, name: $title, age: $platform}';
+  }
+
+  static Future<GameDetail> fetchData(int gameId) async {
+    String url = "https://free2play-api.herokuapp.com/api/games/$gameId/";
+    Map<String, String> headers = API.getHeaders();
+    final db = await getDatabase();
+    const tableName = "gamesDetail";
+    final bool connectionStatus = await getConnectionStatus();
+
+    if (connectionStatus) {
+      final response = await http.get(Uri.parse(url), headers: headers);
+      final parsedGameDetail = jsonParse(response.body);
+      await updateOrCreate(tableName, parsedGameDetail, db);
+      return gameDetailQuery(parsedGameDetail, db);
+    }
+    return gameDetailQuery(RowQuery(id: gameId), db);
+  }
+
+  static GameDetail jsonParse(String responseBody) {
+    final parsedJson = jsonDecode(responseBody);
+    return GameDetail.fromJson(parsedJson);
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:free2play/models/game_model.dart';
-import 'package:free2play/screens/game_screen.dart';
+import 'package:free2play/models/game.dart';
+import 'package:free2play/screens/detail.dart';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/widgets.dart';
