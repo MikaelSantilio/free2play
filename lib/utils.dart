@@ -115,28 +115,3 @@ Future<bool> getConnectionStatus() async {
 }
 
 
-  // static Future<void> syncDatabases() async {
-  //   Map<String, String> headers = {
-  //     "Authorization": "Token 5848cbc484d7138d4f726e34c685f160e3fc868a"
-  //   };
-  //   final db = await getDatabase();
-  //   const tableName = "syncQueue";
-  //   final queue = await syncQueueQuery(db, tableName);
-  //   queue.sort((a, b) => a.id.compareTo(b.id));
-
-  //   final bool connectionStatus = await getConnectionStatus();
-  //   http.Response response;
-  //   if (connectionStatus) {
-  //     for (var item in queue) {
-  //       if (item.method.toUpperCase() == "PUT") {
-  //         response = await http.put(Uri.parse(item.url), headers: headers);
-  //       } else {
-  //         response = await http.delete(Uri.parse(item.url), headers: headers);
-  //       }
-  //       if (response.statusCode == 204) {
-  //         await deleteRow(tableName, item.id, db);
-  //       }
-  //     }
-  //   }
-  // }
-

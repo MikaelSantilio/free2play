@@ -330,9 +330,7 @@ class _GameDetailAppBarState extends State<GameDetailAppBar> {
 Future<bool> favoriteGame(int gameId, bool currentButtonStatus) async {
   String url =
       "https://free2play-api.herokuapp.com/api/games/$gameId/favorite/";
-  Map<String, String> headers = {
-    "Authorization": "Token 5848cbc484d7138d4f726e34c685f160e3fc868a"
-  };
+  Map<String, String> headers = await API.getHeaders();
   final bool connectionStatus = await Utils.getConnectionStatus();
   final db = await getDatabase();
   // const tableName = "favorites";

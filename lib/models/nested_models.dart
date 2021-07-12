@@ -1,9 +1,9 @@
 class SystemRequirements {
-  final String os;
-  final String processor;
-  final String memory;
-  final String graphics;
-  final String storage;
+  final String? os;
+  final String? processor;
+  final String? memory;
+  final String? graphics;
+  final String? storage;
   static String tableName = "systemRequirements";
 
   SystemRequirements({
