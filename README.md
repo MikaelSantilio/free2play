@@ -1,32 +1,26 @@
 <!-- # Free 2 Play -->
 
 
-<center><image src="readme_assets/logo.png" width=100 alt="free2play" ></image></center>
-
+<image align="center" src="readme_assets/logo.png" width=100 alt="free2play" ></image>
 #### Atividade final da disciplina de Programação de Dispositivos Móveis (PDM).
 
-[Link Notion](https://github.com/MikaelSantilio/free2play)
+[Link Notion](https://github.com/MikaelSantilio/free2play) </br>
 [Link Figma](https://www.figma.com/file/vs4GZomZM1q91uaPNm42Jm/Free-2-Play?node-id=4%3A2)
 
 ## Descrição da atividade
 
-#### Crie um aplicativo que consuma uma API no formato mestre-detalhe e que seja disponível offline através de um repositório local.
+Crie um aplicativo que consuma uma API no formato mestre-detalhe e que seja disponível offline através de um repositório local.
 
 ## Atividades propostas
 
-#### 1) Consuma uma API com uma entidade principal e outras entidades filhas.
-
-### 2) Exiba as entidades em uma lis#tagem das entidades principais e das entidades de detalhe.
-
-#### 3) Proponha um mecanismo em que, caso o celular esteja sem conexão, sejam exibidos os dados locais.
-
-#### 4) Proponha também um mecanismo de adição e exclusão, mantendo a sincronicidade entre: listagem, banco local e WEB API.
+1) Consuma uma API com uma entidade principal e outras entidades filhas.
+2) Exiba as entidades em uma lis#tagem das entidades principais e das entidades de detalhe.
+3) Proponha um mecanismo em que, caso o celular esteja sem conexão, sejam exibidos os dados locais.
+4) Proponha também um mecanismo de adição e exclusão, mantendo a sincronicidade entre: listagem, banco local e WEB API.
 
 ## Aplicativo
 
 #### Telas
-
-
 
 <table style="width:100%">
   <tr>
